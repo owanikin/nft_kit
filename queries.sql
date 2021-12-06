@@ -113,6 +113,18 @@ WHERE asset_id = (SELECT asset_id FROM highest_volume_asset) AND time > NOW() - 
 GROUP BY bucket, a.name, a.url
 ORDER BY bucket DESC 
 
+/* Daily total volume of the 5 top buyers */
+WITH top_five_buyers AS (
+   SELECT winner_account FROM nft_sales
+   GROUP BY winner_account
+   ORDER BY count(*) DESC
+   LIMIT 5
+)
+SELECT time_bucket('1 day', time) AS bucket, count(*) AS total_volume FROM nft_sales
+WHERE winner_account IN (SELECT winner_account FROM top_five_buyers)
+GROUP BY bucket
+ORDER BY bucket DESC
+
 
 
 /* Collection continuous aggregates */
