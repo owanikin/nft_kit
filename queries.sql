@@ -277,6 +277,16 @@ GROUP BY bucket, asset_id, a.name, a.url
 ORDER BY intraday_max_change DESC 
 LIMIT 5
 
+SELECT bucket, nft, url,
+        open_price, close_price,
+    intraday_max_change
+FROM top_assets ta
+INNER JOIN LATERAL (
+    SELECT name AS nft, url FROM assets a
+    WHERE a.id = ta.asset_id
+) assets ON TRUE;
+
+
 /* Snoop Dogg's transactions in the past 3 months aggregated */
 WITH snoop_dogg AS (
 	SELECT id FROM accounts 
