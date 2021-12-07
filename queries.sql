@@ -254,6 +254,17 @@ GROUP BY bucket, asset_id
 HAVING count(*) > 100
 ORDER BY bucket
 
+/* Daily OHLCV per asset */
+SELECT time_bucket('1 day', time) AS bucket, asset_id, 
+FIRST(total_price, time) AS open_price, LAST(total_price, time) AS close_price,
+MIN(total_price) AS low_price, MAX(total_price) AS high_price,
+count(*) AS volume
+FROM nft_sales
+WHERE payment_symbol = 'ETH'
+GROUP BY bucket, asset_id
+HAVING count(*) > 100
+ORDER BY bucket
+
 
 /* Daily assets sorted by biggest intraday price change in the last 6 month*/
 SELECT time_bucket('1 day', time) AS bucket, a.name AS nft, a.url,
